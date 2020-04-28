@@ -19,13 +19,31 @@ response = requests.get('https://www.divine-pride.net/api/database/Map/'
                         + _map +'?apiKey='+ _api)
 # Parsing map JSON 
 _json_map = response.json()
-# print(_json_map)                                    # Debugging line showing JSON 
-monster_Id = _json_map['spawn'][0]['monsterId']  
-print(monster_Id)                               # Debugging line showing MonsterID        
+# print(_json_map)                                      # Debugging line showing JSON 
+monster_Id = _json_map['spawn']         
+# print(monster_Id)                                     # Debugging line showing MonsterID        
+monster_Id_table = []
+for i in range(len(_json_map['spawn'])):
+    monster_Id_table.append(_json_map['spawn'][i]['monsterId'])
+print(monster_Id_table)                               # Debugging line show MonsterID's table
+
+# Create monster's name table
+monster_Name_table = []
+monster_Drops_table = []
 
 # Request monster inforamtion
-response = requests.get('https://www.divine-pride.net/api/database/Monster/'
-                        + str(monster_Id) +'?apiKey='+ _api)
-# Parsiong monster JSON
-_json_monster = response.json()
-print(_json_monster)
+for i in range(len(monster_Id_table)):
+    response = requests.get('https://www.divine-pride.net/api/database/Monster/'
+                            + str(monster_Id_table[i]) +'?apiKey='+ _api)
+    # Parsiong monster JSON
+    _json_monster = response.json()
+    # print(_json_monster)                              # Debugging line showing JSON
+    monster_Name = _json_monster['name']
+    monster_Drops = _json_monster['drops']
+    monster_Name_table.append(monster_Name)
+    monster_Drops_table.append(monster_Drops)
+
+# Zipping name and drops table
+monster_Zipped_table = list(zip(monster_Name_table, monster_Drops_table))
+print(monster_Zipped_table[0][1][2]['itemId'])
+print(monster_Zipped_table[0][1][2]['chance'])
